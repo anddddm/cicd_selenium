@@ -1,0 +1,78 @@
+name: Run Selenium Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch: # Позволяет запускать вручную
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        browser: [chrome, firefox]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests on Chrome
+        if: matrix.browser == 'chrome'
+        run: |
+          xvfb-run -a pytest tests/ \
+            --browser=chrome \
+            --headless \
+            -m "not slow" \
+            --html=reports/chrome-report.html \
+            --junitxml=reports/chrome-junit.xml
+
+      - name: Run tests on Firefox
+        if: matrix.browser == 'firefox'
+        run: |
+          xvfb-run -a pytest tests/ \
+            --browser=firefox \
+            --headless \
+            -m "not slow" \
+            --html=reports/firefox-report.html \
+            --junitxml=reports/firefox-junit.xml
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v3
+        if: always() # Загружаем отчеты даже если тесты упали
+        with:
+          name: test-reports-${{ matrix.browser }}
+          path: |
+            reports/
+            screenshots/
+
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            reports/**/*.xml
+
+      - name: Deploy to GitHub Pages (опционально)
+        if: github.ref == 'refs/heads/main' && matrix.browser == 'chrome'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site # Папка с вашим сайтом
