@@ -1,3 +1,4 @@
+import sys
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -9,7 +10,6 @@ from utils.server import LocalServer
 import os
 
 def pytest_addoption(parser):
-    #Добавляем опции командной строки
     parser.addoption("--browser", action="store", default="chrome", 
                      help="Браузер для тестов: chrome, firefox")
     parser.addoption("--headless", action="store_true", default=False,
@@ -20,9 +20,12 @@ def local_server():
     """
     Запуск локального сервера для тестов
     """
-    # Определяем путь к папке с сайтом
+    #Путь к папке с сайтом
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    site_dir = os.path.join(base_dir, "site")
+    site_dir = os.path.join(base_dir, "html")
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(current_dir)
+    sys.path.insert(0, parent_dir)
     
     server = LocalServer(port=8080, directory=site_dir)
     server.start()
@@ -56,9 +59,9 @@ def driver(request, local_server):
     else:
         raise ValueError(f"Неподдерживаемый браузер: {browser}")
     
-    driver.implicitly_wait(10)#Устанавливаем неявные ожидания
+    driver.implicitly_wait(10)
     
-    driver.get("http://localhost:8080/index.html")#Открываем локальный сайт
+    driver.get("http://localhost:8080/index.html")#Локальный сайт вкл
     
     yield driver
     

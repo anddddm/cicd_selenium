@@ -55,8 +55,8 @@ jobs:
             --junitxml=reports/firefox-junit.xml
 
       - name: Upload test reports
-        uses: actions/upload-artifact@v3
-        if: always() # Загружаем отчеты даже если тесты упали
+        uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: test-reports-${{ matrix.browser }}
           path: |
