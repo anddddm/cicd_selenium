@@ -78,3 +78,17 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./html
+
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./html
+          publish_branch: gh-pages
