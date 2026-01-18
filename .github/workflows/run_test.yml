@@ -40,8 +40,9 @@ jobs:
           xvfb-run -a pytest tests/ \
             --browser=chrome \
             --headless \
+            --v \
+            --tb=short
             -m "not slow" \
-            --html=reports/chrome-report.html \
             --junitxml=reports/chrome-junit.xml
 
       - name: Run tests on Firefox
@@ -50,8 +51,9 @@ jobs:
           xvfb-run -a pytest tests/ \
             --browser=firefox \
             --headless \
+            --v \
+            --tb=short
             -m "not slow" \
-            --html=reports/firefox-report.html \
             --junitxml=reports/firefox-junit.xml
 
       - name: Upload test reports
