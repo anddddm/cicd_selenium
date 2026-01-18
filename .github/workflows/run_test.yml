@@ -54,7 +54,7 @@ jobs:
             --browser=firefox \
             --headless \
             -v \
-            --tb=shor
+            --tb=short
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
