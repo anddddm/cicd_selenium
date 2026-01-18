@@ -40,7 +40,7 @@ jobs:
           xvfb-run -a pytest tests/ \
             --browser=chrome \
             --headless \
-            --v \
+            -v \
             --tb=short
             -m "not slow" \
             --junitxml=reports/chrome-junit.xml
@@ -51,7 +51,7 @@ jobs:
           xvfb-run -a pytest tests/ \
             --browser=firefox \
             --headless \
-            --v \
+            -v \
             --tb=short
             -m "not slow" \
             --junitxml=reports/firefox-junit.xml
