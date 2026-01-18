@@ -72,19 +72,12 @@ jobs:
           files: |
             reports/**/*.xml
 
-      - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/main' && matrix.browser == 'chrome'
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./html
-
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-    needs: test
-    if: github.ref == 'refs/heads/main'
+      contents: write #Ключевое право для записи в ветку gh-pages
+    needs: test #Зависит от успешного завершения test
+    if: github.ref == 'refs/heads/main' # Запускаем только для main ветки
     steps:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
