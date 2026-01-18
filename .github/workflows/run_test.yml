@@ -5,7 +5,7 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
-  workflow_dispatch: # Позволяет запускать вручную
+  workflow_dispatch: #Позволяет запускать вручную
 
 jobs:
   test:
@@ -70,7 +70,7 @@ jobs:
           files: |
             reports/**/*.xml
 
-      - name: Deploy to GitHub Pages (опционально)
+      - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main' && matrix.browser == 'chrome'
         uses: peaceiris/actions-gh-pages@v3
         with:
